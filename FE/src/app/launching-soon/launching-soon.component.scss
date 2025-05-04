@@ -1,0 +1,49 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes colorChange {
+  0% { color: #333; }
+  33% { color: #ff0000; }
+  66% { color: #00ff00; }
+  100% { color: #0000ff; }
+}
+
+.launching-soon-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.launching-soon {
+  font-size: 3rem;
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+}
+
+.launching-soon.end {
+  opacity: 1;
+}
+
+.leadsbus {
+  font-size: 2.5rem;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif;
+  animation: colorChange 3s infinite;
+}
+
+.typing {
+  border-right: .1em solid #333;
+  white-space: nowrap;
+  overflow: hidden;
+}
