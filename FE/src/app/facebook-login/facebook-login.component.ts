@@ -44,7 +44,6 @@ export class FacebookLoginComponent implements OnInit {
           xfbml: true,
           version: 'v22.0'
         });
-        console.log('✅ Facebook SDK Initialized');
       } catch (error) {
         console.error('❌ Error initializing Facebook SDK:', error);
       }
@@ -55,7 +54,6 @@ export class FacebookLoginComponent implements OnInit {
     script.src = "https://connect.facebook.net/en_US/sdk.js";
     script.async = true;
     script.defer = true;
-    script.onload = () => console.log('✅ Facebook SDK script loaded');
     script.onerror = () => console.error('❌ Error loading Facebook SDK script');
     document.body.appendChild(script);
   }
@@ -63,9 +61,7 @@ export class FacebookLoginComponent implements OnInit {
   loginWithFacebook(): void {
     FB.login((response: any) => {
       if (response.authResponse) {
-        console.log("✅ Logged in:", response);
         const accessToken = response.authResponse.accessToken;
-        console.log(accessToken);
 
         // Store accessToken in localStorage
         this.containerService.accessToken = accessToken;

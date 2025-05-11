@@ -21,7 +21,6 @@
             </div>
             <div class="page-name">
                 <h1><b>{{containerService.pageName}}</b></h1>
-                <button class="bulk-message-button" (click)="LoadAllRecepients()">Send New Bulk Messages</button>
                 <p 
                   class="messages-left-text" 
                   [ngClass]="{'low-messages': containerService.messagesLeft < 100, 'no-messages': containerService.messagesLeft === 0}">
@@ -35,7 +34,7 @@
             <div class="user-list">
                 <div *ngFor="let user of conversations; let i = index" class="user">
                     <div class="user-info" (click)="selectChat(user.id, user.participants.data[0].name, user.participants.data[0].id)">
-                        <div class="user-name">{{user.participants.data[0].name}}</div>
+                        <div class="user-name">Customer</div>
                         <div class="latest-message">{{user.snippet}}</div>
                     </div>
                 </div>
@@ -47,14 +46,14 @@
         <div style="width: 100%" *ngIf="chatSelected">
             <div class="message-sender">
                 <div class="message-sender-container">
-                    <h2>{{selectedChatName}}</h2> 
+                    <h2>Customer</h2> 
                 </div>
             </div>
             <div class="message-panel">
                 <div *ngFor="let text of chatMessages" class="message-text">
                     <div [ngClass]="{'sender-message': text.from.name == containerService.pageName, 'receiver-message': text.from.name != containerService.pageName}" class="message-text-container">
                         <div>
-                            <p class="m-0"><strong>{{text.from.name == containerService.pageName ? 'You' : text.from.name}}</strong></p>
+                            <p class="m-0"><strong>{{text.from.name == containerService.pageName ? 'You' : 'Customer'}}</strong></p>
                             {{ text.message }}    
                         </div>
                     </div>
@@ -68,35 +67,6 @@
                       (keydown.enter)="sendMessageToSelectedRecipient()">
                         <img src="../../../assets/images/send.svg" class="send-icon" (click)="sendMessageToSelectedRecipient()" [class.disabled]="isLoading || !chatSelected">
                 </div>
-            </div>
-        </div>
-        <div style="width: 100%" *ngIf="chatSelected == false">
-            <div class="radio-selection-container">
-                <div class="radio-selection">
-                    <h3>Select the content type that fits best your message</h3>
-                    <div>
-                        <label>
-                            <input type="radio" name="contentType" value="CONFIRMED_EVENT_UPDATE" [(ngModel)]="selectedContentType">
-                            Confirmed event update
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input type="radio" name="contentType" value="POST_PURCHASE_UPDATE" [(ngModel)]="selectedContentType">
-                            Post purchase update
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input type="radio" name="contentType" value="ACCOUNT_UPDATE" [(ngModel)]="selectedContentType">
-                            Account update
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="input-div">
-                <input class="input-field" [(ngModel)]="bulkMessageText" [disabled]="isLoading" placeholder="Enter your message...">
-                <img src="../../../assets/images/send.svg" class="send-icon" (click)="onSvgClick($event); SendMessageToAll()" [class.disabled]="isLoading">
             </div>
         </div>
     </div>

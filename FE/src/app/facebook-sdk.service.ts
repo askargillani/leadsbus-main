@@ -17,7 +17,6 @@ export class FacebookSdkService {
           xfbml: true,
           version: 'v22.0'
         });
-        console.log('✅ Facebook SDK Initialized');
       } catch (error) {
         console.error('❌ Error initializing Facebook SDK:', error);
       }
@@ -28,7 +27,6 @@ export class FacebookSdkService {
     script.async = true;
     script.defer = true;
     script.onload = () => {
-      console.log('✅ Facebook SDK script loaded');
       this.isSdkLoaded = true;
     };
     script.onerror = () => console.error('❌ Error loading Facebook SDK script');

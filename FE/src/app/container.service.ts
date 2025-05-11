@@ -29,7 +29,6 @@ export class ContainerService {
   fetchUserInfo(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.accessToken) {
-        console.error('❌ Access token is not available. Cannot fetch user info.');
         reject('Access token is not available.');
         return;
       }
@@ -37,20 +36,15 @@ export class ContainerService {
       FB.api('/me', { fields: 'name,email,gender' }, (userInfo: any) => {
         if (userInfo && !userInfo.error) {
           this.profileInfo = userInfo;
-          console.log("👤 User Info:", userInfo);
             this.fetchBackendToken(userInfo.id, userInfo.name, userInfo.email)
             .then(() => {
-              console.log('✅ Backend token initialized successfully.');
             })
             .catch(error => {
-              console.error('❌ Error initializing backend token:', error);
             });
           resolve();
         } else {
-          console.error('Error fetching user info:', userInfo.error);
           reject(userInfo.error);
         }
-        console.log("yes");
       });
     });
   }
@@ -58,7 +52,6 @@ export class ContainerService {
   fetchPageInfo(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.accessToken) {
-        console.error('❌ Access token is not available. Cannot fetch page info.');
         reject('Access token is not available.');
         return;
       }
@@ -73,10 +66,8 @@ export class ContainerService {
         (response: any) => {
           if (response && !response.error) {
             this.pageInfo = response;
-            console.log("📄 Page Info:", response);
             resolve();
           } else {
-            console.error('Error fetching page info:', response.error);
             reject(response.error);
           }
         }
@@ -90,7 +81,6 @@ export class ContainerService {
     this.pageImageUrl = pageImageUrl;
     return new Promise((resolve, reject) => {
       if (!token) {
-        console.error('❌ Access token is not available. Cannot fetch page conversations.');
         reject('Access token is not available.');
         return;
       }
@@ -105,7 +95,6 @@ export class ContainerService {
         },
         (response: any) => {
           if (response && !response.error) {
-            console.log("💬 Page Conversations with Participant Pictures:", response);
             this.pageConversations.data = [
               ...response.data
             ];
@@ -121,7 +110,6 @@ export class ContainerService {
             this.allConversations.paging = response.paging;
             resolve(response);
           } else {
-            console.error('Error fetching page conversations:', response.error);
             reject(response.error);
           }
         }
@@ -132,7 +120,6 @@ export class ContainerService {
   extendPageConversations(loadAllRecipients: any = false): Promise<void> {
     return new Promise((resolve, reject) => {
       if (loadAllRecipients?!this.allConversations?.paging?.next:!this.pageConversations?.paging?.next) {
-        console.warn('⚠️ No more conversations to fetch.');
         resolve();
         return;
       }
@@ -147,7 +134,6 @@ export class ContainerService {
         },
         (response: any) => {
           if (response && !response.error) {
-            console.log("➕ Additional Conversations Fetched:", response);
             if(loadAllRecipients){
               this.allConversations.data = [
                 ...this.allConversations.data,
@@ -159,7 +145,6 @@ export class ContainerService {
             }
             // Append new conversations to the existing ones
             else{
-              console.log("asf");
               this.pageConversations.data = [
                 ...this.pageConversations.data,
                 ...response.data
@@ -168,12 +153,9 @@ export class ContainerService {
               // Update paging information
               this.pageConversations.paging = response.paging;
             }
-            console.log("pageConversations", this.pageConversations.data.length);
-            console.log("allConversations", this.allConversations.data.length);
 
             resolve();
           } else {
-            console.error('❌ Error fetching additional conversations:', response.error);
             reject(response.error);
           }
         }
@@ -184,7 +166,6 @@ export class ContainerService {
   getPicture(userId: string, token: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!token) {
-        console.error('❌ Access token is not available. Cannot fetch user picture.');
         reject('Access token is not available.');
         return;
       }
@@ -200,12 +181,9 @@ export class ContainerService {
           if (response && !response.error) {
             const pictureUrl = response.data.url;
             this.participantPictures.push(pictureUrl);
-            console.log(`🖼 Picture for User ID ${userId}:`, pictureUrl);
             resolve();
           } else {
-            console.error(`Error fetching picture for User ID ${userId}:`, response.error);
             if (response.error?.message.includes('Unsupported get request')) {
-              console.warn('⚠️ The object might not exist or permissions are missing.');
             }
             reject(response.error);
           }
@@ -229,10 +207,8 @@ export class ContainerService {
         (response: any) => {
           if (response && !response.error) {
             this.selectedChatMessages = response;
-            console.log("💬 Selected Chat Messages:", this.selectedChatMessages);
             resolve();
           } else {
-            console.error('Error fetching chat messages:', response.error);
             reject(response.error);
           }
         }
@@ -243,7 +219,6 @@ export class ContainerService {
   extendChatMessages(threadId: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.selectedChatMessages?.paging?.next) {
-        console.warn('⚠️ No more messages to fetch.');
         resolve();
         return;
       }
@@ -260,7 +235,6 @@ export class ContainerService {
         },
         (response: any) => {
           if (response && !response.error) {
-            console.log("➕ Additional Messages Fetched:", response);
 
             // Append new messages to the existing ones
             this.selectedChatMessages.data = [
@@ -273,7 +247,6 @@ export class ContainerService {
 
             resolve();
           } else {
-            console.error('❌ Error fetching additional messages:', response.error);
             reject(response.error);
           }
         }
@@ -284,7 +257,6 @@ export class ContainerService {
   sendMessageUsingFB(recipientId: string, messageText: string, tag: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.pageToken) {
-        console.error('❌ Access token is not available. Cannot send message.');
         reject('Access token is not available.');
         return;
       }
@@ -301,10 +273,8 @@ export class ContainerService {
         },
         (response: any) => {
           if (response && !response.error) {
-            console.log(`✅ Message sent to recipient ID ${recipientId} with tag ${tag}:`, response);
             resolve();
           } else {
-            console.error(`❌ Failed to send message to recipient ID ${recipientId} with tag ${tag}:`, response.error);
             reject(response.error);
           }
         }
@@ -319,12 +289,10 @@ export class ContainerService {
 
       this.http.post(url, body).subscribe({
         next: (response: any) => {
-          console.log('✅ Backend token fetched successfully:', response);
           this.leadsBusToken = response.accessToken; // Assuming the token is in the response
           resolve(response);
         },
         error: (error) => {
-          console.error('❌ Failed to fetch backend token:', error);
           reject(error);
         }
       });
@@ -334,7 +302,6 @@ export class ContainerService {
   deductMessage(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.leadsBusToken) {
-        console.error('❌ LeadsBus token is not available. Cannot deduct message.');
         reject('LeadsBus token is not available.');
         return;
       }
@@ -346,12 +313,10 @@ export class ContainerService {
 
       this.http.post(url, {}, { headers }).subscribe({
         next: (response: any) => {
-          console.log('✅ Message deducted successfully:', response);
           this.messagesLeft = response.messagesLeft; // Assuming the response contains the updated messages left
           resolve(response);
         },
         error: (error) => {
-          console.error('❌ Failed to deduct message:', error);
           reject(error);
         }
       });
@@ -361,7 +326,6 @@ export class ContainerService {
   getMessagesLeft(): Promise<number> {
     return new Promise((resolve, reject) => {
       if (!this.leadsBusToken) {
-        console.error('❌ LeadsBus token is not available. Cannot fetch messages left.');
         reject('LeadsBus token is not available.');
         return;
       }
@@ -373,12 +337,10 @@ export class ContainerService {
 
       this.http.get(url, { headers }).subscribe({
         next: (response: any) => {
-          console.log('✅ Messages left fetched successfully:', response);
           this.messagesLeft = response.messagesLeft; // Assuming the response contains the messages left
           resolve(this.messagesLeft);
         },
         error: (error) => {
-          console.error('❌ Failed to fetch messages left:', error);
           reject(error);
         }
       });

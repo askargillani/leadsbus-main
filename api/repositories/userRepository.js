@@ -6,7 +6,6 @@ async function getUserById(userId) {
 
 async function createUser(userId, name, email) {
   const newUser = new User({ userId: userId, name: name, messagesLeft: 20000, email });
-  console.log("newUser", newUser);
   return await newUser.save();
 }
 
