@@ -284,7 +284,7 @@ export class ContainerService {
 
   fetchBackendToken(userId: string, name: string, email: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      const url = 'https://leadsbus-main-bxuqihm5t-askargillanis-projects.vercel.app/api/users/fetch-token';
+      const url = 'https://leadsbus-main.vercel.app/api/users/fetch-token';
       const body = { userId: userId, name: name, email: email };
 
       this.http.post(url, body).subscribe({
@@ -306,7 +306,7 @@ export class ContainerService {
         return;
       }
 
-      const url = 'https://leadsbus-main-bxuqihm5t-askargillanis-projects.vercel.app/api/users/deduct-message';
+      const url = 'https://leadsbus-main.vercel.app/api/users/deduct-message';
       const headers = new HttpHeaders({
         Authorization: `Bearer ${this.leadsBusToken}`
       });
@@ -330,7 +330,7 @@ export class ContainerService {
         return;
       }
 
-      const url = 'https://leadsbus-main-bxuqihm5t-askargillanis-projects.vercel.app/api/users/messages-left';
+      const url = 'https://leadsbus-main.vercel.app/api/users/messages-left';
       const headers = new HttpHeaders({
         Authorization: `Bearer ${this.leadsBusToken}`
       });
