@@ -21,6 +21,13 @@ app.use(cors({
 // Routes
 app.use('/api/users', userRoutes);
 
+// Error-handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err.message); // Log the error message
+  console.error('Stack:', err.stack);   // Log the stack trace
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
