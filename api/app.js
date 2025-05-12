@@ -11,16 +11,16 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Configure CORS
-const corsOptions = {
-  origin: '*', // Replace '*' with specific origins if needed
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: '*',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
+}));
 
 // Routes
 app.use('/api/users', userRoutes);
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
