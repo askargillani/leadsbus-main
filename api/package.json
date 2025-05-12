@@ -1,9 +1,12 @@
 {
   "name": "leadsbus-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo \"Building the project...\"",
+    "start": "node app.js",
+    "vercel-build": "npm run build"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +17,8 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.14.0"
+    "mongoose": "^8.14.0",
+    "run": "^1.5.0",
+    "start": "^5.1.0"
   }
 }
