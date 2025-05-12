@@ -27,8 +27,6 @@ export class GroupListComponent implements OnInit {
     if (this.containerService.pageInfo?.accounts?.data) {
       this.pages = this.containerService.pageInfo.accounts.data;
       this.filteredPages = [...this.pages];
-    } else {
-      console.warn('No page info available.');
     }
   }
 
@@ -48,7 +46,6 @@ export class GroupListComponent implements OnInit {
   }
 
   onLogout(): void {
-    console.log('🔄 Logging out and refreshing the page...');
     location.reload(); // Refresh the page
   }
 }

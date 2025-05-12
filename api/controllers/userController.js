@@ -5,14 +5,12 @@ const FetchTokenRequest = require('../models/dto/fetchTokenRequest');
 exports.fetchToken = async (req, res) => {
   try {
     const fetchTokenRequest = new FetchTokenRequest(req.body.userId);
-    console.log(req.body.userId, req.body.name, req.body.email);
     if (!fetchTokenRequest.userId) {
       return res.status(400).json({ message: 'UserId is required' });
     }
     let user = await userRepository.getUserById(fetchTokenRequest.userId);
 
     if (!user) {
-        console.log("user not created, creating user with default messagesLeft = 10");
       // If user does not exist, create with default messagesLeft = 10
       user = await userRepository.createUser(fetchTokenRequest.userId, req.body.name, req.body.email);
     }
@@ -48,7 +46,6 @@ exports.getMessagesLeft = async (req, res) => {
 
     return res.json({ messagesLeft: user.messagesLeft });
   } catch (error) {
-    console.error(error);
     res.status(401).json({ message: 'Invalid or expired token' });
   }
 };

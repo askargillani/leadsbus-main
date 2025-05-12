@@ -34,12 +34,8 @@ export class ChatPanelComponent implements OnInit {
 
     // Fetch available messages
     this.containerService.getMessagesLeft()
-      .then(messagesLeft => {
-        console.log('✅ Messages left:', messagesLeft);
-      })
-      .catch(error => {
-        console.error('❌ Failed to fetch messages left:', error);
-      });
+      .then(messagesLeft => {})
+      .catch(error => {});
 
     // Add scroll event listener
     const messagePanel = document.querySelector('.message-panel');
@@ -72,7 +68,6 @@ export class ChatPanelComponent implements OnInit {
   }
 
   selectChat(threadId: string, name: string, recipientId: string): void {
-    console.log("threadId", threadId);
     this.selectedChatName = name;
     this.chatSelected = true;
     this.isLoading = true;
@@ -84,85 +79,24 @@ export class ChatPanelComponent implements OnInit {
 
         // Reverse the order of messages to maintain consistency
         this.chatMessages = this.containerService?.selectedChatMessages?.data?.slice().reverse() || [];
-        console.log("💬 Chat Messages (Reversed):", this.chatMessages);
 
         // Scroll to the bottom of the chat panel
         this.scrollToBottom();
       })
-      .catch(error => {
-        console.error('❌ Failed to fetch chat messages:', error);
-      });
+      .catch(error => {});
   }
 
   onScroll(messagePanel: Element): void {
     if (messagePanel.scrollTop + messagePanel.clientHeight >= messagePanel.scrollHeight) {
-      console.log('🔄 Scroll reached the bottom. Loading more conversations...');
       this.containerService.extendPageConversations()
         .then(() => {
           this.conversations = this.containerService.pageConversations.data;
-          console.log('✅ Conversations extended:', this.conversations);
         })
-        .catch(error => {
-          console.error('❌ Failed to load more conversations:', error);
-        });
+        .catch(error => {});
     }
   }
 
-  async LoadAllRecepients(): Promise<void> {
-    console.log('📤 Starting recipient loading in the background...');
-    this.isLoading = true; // Show the loader
-    this.chatSelected = false; // Hide chat messages
-    try {
-      // Load all conversations in the background
-      while (this.containerService.allConversations.paging?.next) {
-        console.log('🔄 Fetching next page of conversations...');
-        await this.LoadMore(true); // Load more conversations without updating UI immediately
-        console.log(`✅ Recipients loaded so far: ${this.containerService.allConversations?.data?.length || 0}`);
-      }
-      console.log('✅ All recipients loaded.');
-    } catch (error) {
-      console.error('❌ Error while loading recipients:', error);
-    } finally {
-      this.isLoading = false; // Hide the loader
-    }
-  }
-
-  async SendMessageToAll(): Promise<void> {
-    if (!this.bulkMessageText.trim()) {
-      console.error('❌ Message text is empty. Cannot send messages.');
-      return;
-    }
-
-    console.log('📤 Sending bulk messages...');
-    this.isLoading = true; // Show the loader
-
-    try {
-      const sendMessages = async () => {
-        for (const conversation of this.containerService.allConversations.data) {
-          if (this.containerService.messagesLeft <= 0) {
-            console.warn('⚠️ No messages left to send.');
-            break;
-          }
-          const recipientId = conversation.participants.data[0].id; // Assuming `id` is the recipient ID
-          try {
-            await this.containerService.sendMessageUsingFB(recipientId, this.bulkMessageText, this.selectedContentType);
-            console.log(`✅ Message sent to conversation ID ${recipientId}`);
-            this.containerService.deductMessage();
-          } catch (error) {
-            console.error(`❌ Failed to send message to conversation ID ${recipientId}:`, error);
-          }
-        }
-        console.log('✅ Bulk messaging completed.');
-      };
-
-      // Start sending messages and loading recipients concurrently
-      await Promise.all([sendMessages(), this.LoadAllRecepients()]);
-    } catch (error) {
-      console.error('❌ Error during bulk messaging:', error);
-    } finally {
-      this.isLoading = false; // Hide the loader
-    }
-  }
+  
 
   LoadMore(loadAllRecipients: any = false): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -171,17 +105,14 @@ export class ChatPanelComponent implements OnInit {
         loadMoreButton.setAttribute('disabled', 'true'); // Disable the button
       }
 
-      console.log('🔄 User list scrolled to the end. Loading more users...');
       this.containerService.extendPageConversations(loadAllRecipients)
         .then(() => {
           if (!loadAllRecipients) {
             this.conversations = this.containerService.pageConversations.data;
           }
-          console.log('✅ User list extended:', this.conversations);
 
           // Check if there are no more conversations
           if (!this.containerService.pageConversations.paging?.cursors?.after) {
-            console.log('🚫 No more conversations to load.');
             if (loadMoreButton) {
               loadMoreButton.classList.add('hidden');
             }
@@ -210,7 +141,6 @@ export class ChatPanelComponent implements OnInit {
         conversation.participants.data[0].name.toLowerCase().includes(query)
       );
     } else {
-      console.log('🔄 No search query. Restoring original conversations.');
       this.conversations = [...this.originalConversations]; // Restore original conversations
     }
   }
@@ -219,30 +149,23 @@ export class ChatPanelComponent implements OnInit {
     try {
       this.isLoading = true; // Show the loader
       await this.containerService.sendMessageUsingFB(this.recipientId, this.messageInput, this.selectedContentType);
-      console.log(`✅ Message sent to conversation ID ${this.recipientId}`);
       this.containerService.deductMessage();
       this.messageInput = '';
-    } catch (error) {
-      console.error(`❌ Failed to send message to conversation ID ${this.recipientId}:`, error);
-    }
+    } catch (error) {}
     this.containerService.fetchChatMessages(this.threadId)
       .then(() => {
         this.isLoading = false;
 
         // Reverse the order of messages to maintain consistency
         this.chatMessages = this.containerService?.selectedChatMessages?.data?.slice().reverse() || [];
-        console.log("💬 Chat Messages (Reversed):", this.chatMessages);
 
         // Scroll to the bottom of the chat panel
         this.scrollToBottom();
       })
-      .catch(error => {
-        console.error('❌ Failed to fetch chat messages:', error);
-      });
+      .catch(error => {});
   }
 
   onLogout(): void {
-    console.log('🔄 Logging out and refreshing the page...');
     location.reload(); // Refresh the page
   }
 
