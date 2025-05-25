@@ -75,9 +75,13 @@ export class FacebookLoginComponent implements OnInit {
             });
           })
           .catch(error => {
+            location.reload();
+            this.loginWithFacebook();
             console.error('Error during Facebook API calls:', error);
           });
       } else {
+        location.reload();
+        this.loginWithFacebook();
         console.warn("❌ Login cancelled or failed.");
       }
     }, {
