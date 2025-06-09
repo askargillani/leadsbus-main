@@ -29,7 +29,7 @@
                 </p>
             </div>
             <div class="search-container">
-                <input class="search-input" placeholder="Search users..." [(ngModel)]="searchQuery" (ngModelChange)="filterRecipients()">
+                <input class="search-input" placeholder="Search conversations..." [(ngModel)]="searchQuery" (ngModelChange)="filterRecipients()">
             </div>
             <div class="user-list">
                 <div *ngFor="let user of conversations; let i = index" class="user">
@@ -51,23 +51,69 @@
             </div>
             <div class="message-panel">
                 <div *ngFor="let text of chatMessages" class="message-text">
-                    <div [ngClass]="{'sender-message': text.from.name == containerService.pageName, 'receiver-message': text.from.name != containerService.pageName}" class="message-text-container">
-                        <div>
-                            <p class="m-0"><strong>{{text.from.name == containerService.pageName ? 'You' : 'Customer'}}</strong></p>
-                            {{ text.message }}    
-                        </div>
+                  <div [ngClass]="{'sender-message': text.from.name == containerService.pageName, 'receiver-message': text.from.name != containerService.pageName}" class="message-text-container">
+                    <div>
+                      <p class="m-0"><strong>{{text.from.name == containerService.pageName ? 'You' : 'Customer'}}</strong></p>
+                      <span *ngIf="text.message">{{ text.message }}</span>
+                      <ng-container *ngIf="text.attachments && text.attachments.data && text.attachments.data.length">
+                        <ng-container *ngFor="let att of text.attachments.data">
+                          <img 
+                            *ngIf="att.mime_type && att.mime_type.startsWith('image/')" 
+                            [src]="att.image_data?.url || att.file_url" 
+                            alt="Image" 
+                            style="max-width: 200px; max-height: 200px; display: block; margin-top: 5px;">
+                        </ng-container>
+                      </ng-container>
                     </div>
+                  </div>
                 </div>
                 <div class="input-div">
-                    <input 
-                      class="input-field" 
-                      [(ngModel)]="messageInput" 
-                      [disabled]="isLoading || !chatSelected" 
-                      placeholder="Type a message..." 
-                      (keydown.enter)="sendMessageToSelectedRecipient()">
-                        <img src="../../../assets/images/send.svg" class="send-icon" (click)="sendMessageToSelectedRecipient()" [class.disabled]="isLoading || !chatSelected">
+                  <!-- Attach button and hidden file input -->
+                  <label class="attach-label" title="Attach image">
+                    <img src="../../../assets/images/attach.svg" class="attach-icon" alt="Attach" />
+                    <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none;" />
+                  </label>
+                  <input 
+                    class="input-field" 
+                    [(ngModel)]="messageInput" 
+                    [disabled]="isLoading || !chatSelected" 
+                    placeholder="Type a message..." 
+                    (keydown.enter)="onSend()">
+                  <img src="../../../assets/images/send.svg" class="send-icon" (click)="onSend()" [class.disabled]="isLoading || !chatSelected">
+
+                  <!-- Show selected image preview with cross -->
+                  <div *ngIf="selectedFile" class="attachment-preview">
+                    <img [src]="selectedFilePreview" alt="Preview" class="preview-img" />
+                    <span class="remove-attachment" (click)="removeAttachment()">&#10005;</span>
+                  </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<!-- New small dialog for content type selection -->
+<div class="content-type-dialog" *ngIf="showContentTypeDialog">
+  <div class="dialog-content">
+    <div class="dialog-header">
+      <span>Select Content Type</span>
+    </div>
+    <div class="dialog-body">
+      <label>
+        <input type="radio" name="contentTypeDialog" value="CONFIRMED_EVENT_UPDATE" [(ngModel)]="selectedContentType">
+        Confirmed Update
+      </label>
+      <label>
+        <input type="radio" name="contentTypeDialog" value="POST_PURCHASE_UPDATE" [(ngModel)]="selectedContentType">
+        Post Purchase Update
+      </label>
+      <label>
+        <input type="radio" name="contentTypeDialog" value="ACCOUNT_UPDATE" [(ngModel)]="selectedContentType">
+        Account Update
+      </label>
+    </div>
+    <div class="dialog-footer">
+      <button class="tick-button" (click)="sendMessageWithContentType()">✔</button>
+    </div>
+  </div>
 </div>

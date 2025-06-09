@@ -11,6 +11,8 @@ declare let FB: any;
   styleUrls: ['./facebook-login.component.scss']
 })
 export class FacebookLoginComponent implements OnInit {
+  permissionsAccepted: boolean = false;
+
   constructor(
     private cdr: ChangeDetectorRef, 
     private containerService: ContainerService, 
@@ -85,7 +87,7 @@ export class FacebookLoginComponent implements OnInit {
         console.warn("❌ Login cancelled or failed.");
       }
     }, {
-      scope: 'email,public_profile,pages_show_list,pages_messaging,business_management'
+      scope: 'email,public_profile,pages_show_list,pages_messaging'
     });
   }  
 }

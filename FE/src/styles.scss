@@ -10,3 +10,16 @@ body, html {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Example: chat-panel.component.scss */
+.attach-icon {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.attach-label {
+  display: inline-block;
+  vertical-align: middle;
+}
