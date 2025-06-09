@@ -509,3 +509,86 @@
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+
+.content-type-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-content {
+  background: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  min-width: 260px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dialog-header {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.dialog-body label {
+  display: block;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tick-button {
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.tick-button:hover {
+  background: #388e3c;
+}
+
+.attachment-preview {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.preview-img {
+  max-width: 120px;
+  max-height: 120px;
+  border-radius: 8px;
+  margin-right: 8px;
+  object-fit: contain;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.remove-attachment {
+  cursor: pointer;
+  color: #f44336;
+  font-size: 24px;
+  margin-left: 4px;
+  font-weight: bold;
+  user-select: none;
+}

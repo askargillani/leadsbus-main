@@ -14,7 +14,15 @@
         Select the tags you want and send a promotion, news, or whatever you want to share.
       </p>
     </div>
-    <button class="login-button animated-button" (click)="loginWithFacebook()">
+    <div style="margin: 16px 0;">
+      <label>
+        <input type="checkbox" [(ngModel)]="permissionsAccepted" />
+        I agree to allow this app to access my Facebook pages and send messages on my behalf.
+      </label>
+    </div>
+    <button class="login-button animated-button"
+            (click)="loginWithFacebook()"
+            [disabled]="!permissionsAccepted">
       <i class="fab fa-facebook-f"></i> Continue with Facebook
     </button>
   </div>

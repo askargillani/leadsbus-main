@@ -194,14 +194,12 @@ export class ContainerService {
 
   fetchChatMessages(threadId: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      
-
       FB.api(
         `/${threadId}/messages`,
         'GET',
         {
           access_token: this.pageToken,
-          fields: 'id,created_time,from,to,message',
+          fields: 'id,created_time,from,to,message,attachments',
           limit: 25
         },
         (response: any) => {
@@ -230,7 +228,7 @@ export class ContainerService {
         'GET',
         {
           access_token: this.pageToken,
-          fields: 'id,created_time,from,to,message',
+          fields: 'id,created_time,from,to,message,attachments',
           limit: 25
         },
         (response: any) => {
@@ -279,6 +277,31 @@ export class ContainerService {
           }
         }
       );
+    });
+  }
+
+  sendImageAttachmentUsingFB(recipientId: string, file: File): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.pageToken) {
+        reject('Access token is not available.');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('recipient', JSON.stringify({ id: recipientId }));
+      formData.append('message', JSON.stringify({ attachment: { type: 'image', payload: {} } }));
+      formData.append('filedata', file);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `https://graph.facebook.com/v18.0/me/messages?access_token=${this.pageToken}`);
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          resolve();
+        } else {
+          reject(xhr.responseText);
+        }
+      };
+      xhr.onerror = () => reject(xhr.responseText);
+      xhr.send(formData);
     });
   }
 
