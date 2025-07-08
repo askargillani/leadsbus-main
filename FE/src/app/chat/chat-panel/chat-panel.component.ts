@@ -305,6 +305,9 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
             console.error(`❌ Failed to send message to conversation ID ${recipientId}:`, error);
           }
         }
+        this.containerService.fetchPageConversations(this.containerService.pageToken, this.containerService.pageName,  this.containerService.pageImageUrl).then(()=>{
+          this.conversations = this.containerService.pageConversations.data
+        });
         this.isLoading = false;
       };
 
