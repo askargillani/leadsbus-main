@@ -35,7 +35,7 @@
             <div class="user-list">
                 <div *ngFor="let user of conversations; let i = index" class="user">
                     <div class="user-info" (click)="selectChat(user.id, user.participants.data[0].name, user.participants.data[0].id)">
-                        <div class="user-name">Customer</div>
+                        <div class="user-name">{{user.participants.data[0].name}}</div>
                         <div class="latest-message">{{user.snippet}}</div>
                     </div>
                 </div>
@@ -47,14 +47,14 @@
         <div style="width: 100%" *ngIf="chatSelected">
             <div class="message-sender">
                 <div class="message-sender-container">
-                    <h2>Customer</h2> 
+                    <h2>{{selectedChatName}}</h2> 
                 </div>
             </div>
             <div class="message-panel">
                 <div *ngFor="let text of chatMessages" class="message-text">
                   <div [ngClass]="{'sender-message': text.from.name == containerService.pageName, 'receiver-message': text.from.name != containerService.pageName}" class="message-text-container">
                     <div>
-                      <p class="m-0"><strong>{{text.from.name == containerService.pageName ? 'You' : 'Customer'}}</strong></p>
+                      <p class="m-0"><strong>{{text.from.name == containerService.pageName ? 'You' : text.from.name}}</strong></p>
                       <span *ngIf="text.message">{{ text.message }}</span>
                       <ng-container *ngIf="text.attachments && text.attachments.data && text.attachments.data.length">
                         <ng-container *ngFor="let att of text.attachments.data">

@@ -159,7 +159,7 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
   }
 
   openContentTypeDialog(): void {
-    if ((!this.messageInput.trim()) || this.selectedFile) return;
+    if ((!this.messageInput.trim()) && !this.selectedFile) return;
     this.showContentTypeDialog = true;
   }
 
@@ -169,6 +169,42 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
       return;
     }
     this.isLoading = true;
+    if(this.selectedFile)
+      this.sendAttachment().then(() => {
+    this.showContentTypeDialog = false;
+      this.containerService.sendMessageUsingFB(this.recipientId, this.messageInput, this.selectedContentType)
+        .then(() => {
+          this.containerService.deductMessage();
+          this.messageInput = '';
+          this.selectedContentType = '';
+          this.showContentTypeDialog = false;
+        }).catch(error => {
+          // ...handle error...
+          this.showContentTypeDialog = false;
+        })
+        .finally(() => {
+          this.containerService.fetchChatMessages(this.threadId)
+            .then(() => {
+              this.isLoading = false;
+              this.chatMessages = this.containerService?.selectedChatMessages?.data?.slice().reverse() || [];
+              this.scrollToBottom();
+            })
+            .catch(error => {});
+        });
+    }).catch(error => {
+          // ...handle error...
+          this.showContentTypeDialog = false;
+        })
+        .finally(() => {
+          this.containerService.fetchChatMessages(this.threadId)
+            .then(() => {
+              this.isLoading = false;
+              this.chatMessages = this.containerService?.selectedChatMessages?.data?.slice().reverse() || [];
+              this.scrollToBottom();
+            })
+            .catch(error => {});
+        }); // Send attachment if selected
+    else
     this.containerService.sendMessageUsingFB(this.recipientId, this.messageInput, this.selectedContentType)
       .then(() => {
         this.containerService.deductMessage();
@@ -287,41 +323,23 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
 
   onSend(): void {
     if (this.isLoading || !this.chatSelected) return;
-    if (this.selectedFile) {
-      // If both file and text, send both
-      if (this.messageInput.trim()) {
-        this.sendAttachment(true); // Pass flag to send text after image
-      } else {
-        this.sendAttachment(false);
-      }
-    } else if (this.messageInput.trim()) {
+    if (this.messageInput.trim() || this.selectedFile) {
       this.openContentTypeDialog();
     }
   }
 
-  sendAttachment(sendTextAfter: boolean = false): void {
+  async sendAttachment(): Promise<void> {
     if (!this.selectedFile || !this.chatSelected) return;
-
     this.isLoading = true;
-    this.containerService.sendImageAttachmentUsingFB(this.recipientId, this.selectedFile)
+    this.containerService.sendImageAttachmentUsingFB(this.recipientId, this.selectedFile, this.selectedContentType)
       .then(() => {
+        this.isLoading = false;
         this.selectedFile = null;
         this.selectedFilePreview = null;
-        if (sendTextAfter && this.messageInput.trim()) {
-          // After image, open content type dialog for text
-          this.isLoading = false; // Allow dialog interaction
-          this.openContentTypeDialog();
-          return;
-        }
         return this.containerService.fetchChatMessages(this.threadId);
       })
       .then((res) => {
-        // Only update messages if not sending text after
-        if (!sendTextAfter) {
-          this.isLoading = false;
-          this.chatMessages = this.containerService?.selectedChatMessages?.data?.slice().reverse() || [];
-          this.scrollToBottom();
-        }
+        // Only update messages if not sending text afte
       })
       .catch(() => {
         this.isLoading = false;
