@@ -65,22 +65,45 @@ export class FacebookLoginComponent implements OnInit {
       if (response.authResponse) {
         const accessToken = response.authResponse.accessToken;
 
-        // Store accessToken in localStorage
-        this.containerService.accessToken = accessToken;
-        // Fetch user info and page info using the service
-        this.containerService.fetchUserInfo()
-          .then(() => this.containerService.fetchPageInfo())
-          .then(() => {
-            // Trigger navigation inside Angular's zone
-            this.ngZone.run(() => {
-              this.router.navigate(['/groups']);
-            });
-          })
-          .catch(error => {
-            location.reload();
-            this.loginWithFacebook();
-            console.error('Error during Facebook API calls:', error);
-          });
+        // Extend the short-lived token to a long-lived token
+        FB.api('/oauth/access_token', {
+          grant_type: 'fb_exchange_token',
+          client_id: '9133049930120533',
+          client_secret: 'YOUR_APP_SECRET', // Replace with your app secret
+          fb_exchange_token: accessToken
+        }, (tokenResponse: any) => {
+          if (tokenResponse && tokenResponse.access_token) {
+            this.containerService.accessToken = tokenResponse.access_token;
+            // Fetch user info and page info using the service
+            this.containerService.fetchUserInfo()
+              .then(() => this.containerService.fetchPageInfo())
+              .then(() => {
+                this.ngZone.run(() => {
+                  this.router.navigate(['/groups']);
+                });
+              })
+              .catch(error => {
+                location.reload();
+                this.loginWithFacebook();
+                console.error('Error during Facebook API calls:', error);
+              });
+          } else {
+            // Fallback to short-lived token if extension fails
+            this.containerService.accessToken = accessToken;
+            this.containerService.fetchUserInfo()
+              .then(() => this.containerService.fetchPageInfo())
+              .then(() => {
+                this.ngZone.run(() => {
+                  this.router.navigate(['/groups']);
+                });
+              })
+              .catch(error => {
+                location.reload();
+                this.loginWithFacebook();
+                console.error('Error during Facebook API calls:', error);
+              });
+          }
+        });
       } else {
         location.reload();
         this.loginWithFacebook();

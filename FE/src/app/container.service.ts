@@ -280,7 +280,7 @@ export class ContainerService {
     });
   }
 
-  sendImageAttachmentUsingFB(recipientId: string, file: File): Promise<void> {
+  sendImageAttachmentUsingFB(recipientId: string, file: File, tag: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.pageToken) {
         reject('Access token is not available.');
@@ -289,6 +289,8 @@ export class ContainerService {
       const formData = new FormData();
       formData.append('recipient', JSON.stringify({ id: recipientId }));
       formData.append('message', JSON.stringify({ attachment: { type: 'image', payload: {} } }));
+      formData.append('messaging_type', 'MESSAGE_TAG');
+      formData.append('tag', tag);
       formData.append('filedata', file);
 
       const xhr = new XMLHttpRequest();
