@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ContainerService } from 'src/app/container.service';
 
@@ -7,7 +7,7 @@ import { ContainerService } from 'src/app/container.service';
   templateUrl: './chat-panel.component.html',
   styleUrls: ['./chat-panel.component.scss']
 })
-export class ChatPanelComponent implements OnInit {
+export class ChatPanelComponent implements OnInit, OnDestroy {
   
   conversations: any;
   profilePictures: any;
@@ -25,6 +25,10 @@ export class ChatPanelComponent implements OnInit {
   showContentTypeDialog: boolean = false; // New flag for showing dialog
   selectedFile: File | null = null;
   selectedFilePreview: string | null = null;
+  private refreshInterval: any; // For polling
+  isBulkSending: boolean = false;
+  bulkSentCount: number = 0;
+  bulkTotalCount: number = 0;
 
   constructor(private router: Router, public containerService: ContainerService, private ngZone: NgZone) {
 
@@ -44,6 +48,12 @@ export class ChatPanelComponent implements OnInit {
     const messagePanel = document.querySelector('.message-panel');
     if (messagePanel) {
       messagePanel.addEventListener('scroll', () => this.onScroll(messagePanel));
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
     }
   }
 
@@ -205,6 +215,74 @@ export class ChatPanelComponent implements OnInit {
   removeAttachment(): void {
     this.selectedFile = null;
     this.selectedFilePreview = null;
+  }
+
+    async LoadAllRecepients(): Promise<void> {
+    console.log('📤 Starting recipient loading in the background...');
+    this.isLoading = true; // Show the loader
+    this.chatSelected = false; // Hide chat messages
+    try {
+      // Load all conversations in the background
+      while (this.containerService.allConversations.paging?.next) {
+        console.log('🔄 Fetching next page of conversations...');
+        await this.LoadMore(true); // Load more conversations without updating UI immediately
+        console.log(`✅ Recipients loaded so far: ${this.containerService.allConversations?.data?.length || 0}`);
+      }
+      console.log('✅ All recipients loaded.');
+    } catch (error) {
+      console.error('❌ Error while loading recipients:', error);
+    } finally {
+      this.isLoading = false; // Hide the loader
+    }
+  }
+
+  async SendMessageToAll(): Promise<void> {
+    if (!this.bulkMessageText.trim()) {
+      console.error('❌ Message text is empty. Cannot send messages.');
+      return;
+    }
+
+    console.log('📤 Sending bulk messages...');
+    this.isLoading = true; // Show the loader
+
+    // Setup bulk sending state
+    this.isBulkSending = true;
+    this.bulkSentCount = 0;
+    this.bulkTotalCount = this.containerService.allConversations?.data?.length || 0;
+
+    try {
+      const sendMessages = async () => {
+        this.isLoading = true;
+        let sent = 0;
+        for (const conversation of this.containerService.allConversations.data) {
+          if (this.containerService.messagesLeft <= 0) {
+            console.warn('⚠️ No messages left to send.');
+            break;
+          }
+          const recipientId = conversation.participants.data[0].id;
+          try {
+            await this.containerService.sendMessageUsingFB(recipientId, this.bulkMessageText, this.selectedContentType);
+            sent++;
+            this.bulkSentCount = sent;
+            this.containerService.deductMessage();
+          } catch (error) {
+            console.error(`❌ Failed to send message to conversation ID ${recipientId}:`, error);
+          }
+        }
+        this.isLoading = false;
+      };
+
+      await Promise.all([sendMessages(), this.LoadAllRecepients()]);
+    } catch (error) {
+      console.error('❌ Error during bulk messaging:', error);
+    } finally {
+      this.isLoading = false;
+      setTimeout(() => {
+        this.isBulkSending = false;
+        this.bulkSentCount = 0;
+        this.bulkTotalCount = 0;
+      }, 2000); // Show overlay for 2s after completion
+    }
   }
 
   onSend(): void {

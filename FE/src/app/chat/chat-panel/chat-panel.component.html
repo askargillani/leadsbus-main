@@ -21,6 +21,7 @@
             </div>
             <div class="page-name">
                 <h1><b>{{containerService.pageName}}</b></h1>
+                <button class="bulk-message-button" (click)="LoadAllRecepients()">Send New Bulk Messages</button>
                 <p 
                   class="messages-left-text" 
                   [ngClass]="{'low-messages': containerService.messagesLeft < 100, 'no-messages': containerService.messagesLeft === 0}">
@@ -89,6 +90,35 @@
                 </div>
             </div>
         </div>
+                <div style="width: 100%" *ngIf="chatSelected == false">
+        <div class="radio-selection-container">
+            <div class="radio-selection">
+                <h3>Select the content type that fits best your message</h3>
+                <div>
+                    <label>
+                        <input type="radio" name="contentType" value="CONFIRMED_EVENT_UPDATE" [(ngModel)]="selectedContentType">
+                        Confirmed event update
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input type="radio" name="contentType" value="POST_PURCHASE_UPDATE" [(ngModel)]="selectedContentType">
+                        Post purchase update
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input type="radio" name="contentType" value="ACCOUNT_UPDATE" [(ngModel)]="selectedContentType">
+                        Account update
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="input-div">
+            <input class="input-field" [(ngModel)]="bulkMessageText" [disabled]="isLoading" placeholder="Enter your message...">
+            <img src="../../../assets/images/send.svg" class="send-icon" (click)="onSvgClick($event); SendMessageToAll()" [class.disabled]="isLoading">
+        </div>
+    </div>
     </div>
 </div>
 
@@ -115,5 +145,110 @@
     <div class="dialog-footer">
       <button class="tick-button" (click)="sendMessageWithContentType()">✔</button>
     </div>
+    
+  </div>
+
+</div>
+
+<!-- Animated overlay for bulk sending -->
+<div 
+  *ngIf="isBulkSending" 
+  class="bulk-sending-overlay"
+>
+  <div class="bulk-sending-content">
+    <div class="bulk-sending-anim">
+      <span class="pulse-circle"></span>
+      <span class="pulse-circle pulse-delay"></span>
+      <span class="pulse-circle pulse-delay2"></span>
+    </div>
+    <div class="bulk-sending-text">
+      <h2>
+        <span class="sent-count">{{bulkSentCount}}</span> / <span class="total-count">{{bulkTotalCount}}</span> messages sent
+      </h2>
+      <p class="dont-close-text">
+        <span class="animated-warning">⚠️</span>
+        Please <b>do not close</b> the browser or tab.<br>
+        Messages are being sent...
+      </p>
+    </div>
   </div>
 </div>
+
+<style>
+/* Add these styles to your component's CSS/SCSS file */
+.bulk-sending-overlay {
+  position: fixed;
+  z-index: 9999;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(30, 30, 30, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.5s;
+}
+.bulk-sending-content {
+  background: #fff;
+  border-radius: 18px;
+  padding: 40px 60px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  text-align: center;
+  min-width: 320px;
+  position: relative;
+}
+.bulk-sending-anim {
+  margin-bottom: 18px;
+}
+.pulse-circle {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin: 0 6px;
+  border-radius: 50%;
+  background: #0e5caa;
+  animation: pulse 1.2s infinite;
+}
+.pulse-delay { animation-delay: 0.4s; }
+.pulse-delay2 { animation-delay: 0.8s; }
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1;}
+  50% { transform: scale(1.5); opacity: 0.5;}
+  100% { transform: scale(1); opacity: 1;}
+}
+@keyframes fadeIn {
+  from { opacity: 0;}
+  to { opacity: 1;}
+}
+.bulk-sending-text h2 {
+  font-size: 2rem;
+  margin: 0 0 10px 0;
+  color: #0e5caa;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.sent-count {
+  color: #0e5caa;
+  font-size: 2.2rem;
+  font-weight: bold;
+  animation: countPulse 1s infinite;
+}
+@keyframes countPulse {
+  0%, 100% { color: #0e5caa; }
+  50% { color: #1e90ff; }
+}
+.dont-close-text {
+  color: #e74c3c;
+  font-size: 1.1rem;
+  margin-top: 8px;
+  font-weight: 500;
+  animation: fadeIn 1s;
+}
+.animated-warning {
+  animation: shake 1s infinite;
+  display: inline-block;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0);}
+  20%, 60% { transform: translateX(-4px);}
+  40%, 80% { transform: translateX(4px);}
+}
+</style>
