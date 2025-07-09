@@ -69,7 +69,7 @@ export class FacebookLoginComponent implements OnInit {
         FB.api('/oauth/access_token', {
           grant_type: 'fb_exchange_token',
           client_id: '9133049930120533',
-          client_secret: 'YOUR_APP_SECRET', // Replace with your app secret
+          client_secret: '506dacacc08dae9ae0365822b09a5ea0', // Replace with your app secret
           fb_exchange_token: accessToken
         }, (tokenResponse: any) => {
           if (tokenResponse && tokenResponse.access_token) {
