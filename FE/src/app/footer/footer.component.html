@@ -1,7 +1,12 @@
-<footer class="footer">
+<footer class="footer" id="footer-section">
+  <div id="footer-cta-message" class="footer-cta-message" style="display:none;">
+    <span class="footer-cta-icon">🎉</span>
+    <span class="footer-cta-text"></span>
+  </div>
   <div class="section-join container">
-    <h1 class="section-title col-12 col-lg-7 mx-auto">Join millions of creative people with LeadsBus</h1>
-    <button class="btn btn-orange" (click)="contactUs()">Contact Us</button>
+    <h1 id="footer-cta-heading" class="section-title col-12 col-lg-7 mx-auto">Wanna purchase your best plan!</h1>
+    <button id="footer-whatsapp-btn" class="btn btn-orange" (click)="contactUsWithWhatsapp()">Contact Us Via Whatsapp</button>
+    <button id="footer-messenger-btn" class="btn btn-orange" (click)="openMessenger()">Contact Us Via Messenger</button>
   </div>
 
   <div class="line"></div>

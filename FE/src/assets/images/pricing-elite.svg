@@ -1,0 +1,8 @@
+<!-- filepath: c:\Users\Askar\OneDrive\Documents\leadsbus-main\FE\src\assets\images\pricing-elite.svg -->
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+  <ellipse cx="24" cy="38" rx="16" ry="6" fill="#FF7F5C"/>
+  <polygon points="8,38 16,18 24,32 32,18 40,38" fill="#22D497"/>
+  <circle cx="16" cy="18" r="3" fill="#FF7F5C"/>
+  <circle cx="32" cy="18" r="3" fill="#FF7F5C"/>
+  <circle cx="24" cy="32" r="3" fill="#3734A9"/>
+</svg>

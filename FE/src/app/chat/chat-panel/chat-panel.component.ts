@@ -350,4 +350,15 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
         this.selectedFilePreview = null;
       });
   }
+
+  onPaySubscription(): void {
+    this.router.navigate(['/']).then(() => {
+      setTimeout(() => {
+        const plansSection = document.querySelector('h1 b');
+        if (plansSection) {
+          plansSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500);
+    });
+  }
 }

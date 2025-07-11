@@ -20,7 +20,11 @@ export class FooterComponent implements OnInit {
     this.router.navigate(['terms-and-conditions']);
   }
 
-  contactUs() {
-    window.location.href = 'mailto:askar@leadsbus.com';
+  contactUsWithWhatsapp() {
+    window.open('https://wa.me/923086772000', '_blank');
+  }
+
+  openMessenger() {
+    window.open('https://m.me/651433154724566', '_blank');
   }
 }

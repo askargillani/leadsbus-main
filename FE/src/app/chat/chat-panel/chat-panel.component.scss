@@ -592,3 +592,28 @@
   font-weight: bold;
   user-select: none;
 }
+
+.pay-subscription-btn {
+  display: block;
+  margin: 18px auto 0 auto;
+  padding: 14px 32px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #FF7F5C 0%, #FFB86C 100%);
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 24px rgba(255,127,92,0.15);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  animation: payBtnPop 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+}
+.pay-subscription-btn:hover {
+  background: linear-gradient(90deg, #22D497 0%, #FF7F5C 100%);
+  transform: scale(1.05);
+}
+@keyframes payBtnPop {
+  0% { opacity: 0; transform: scale(0.7);}
+  60% { opacity: 1; transform: scale(1.1);}
+  100% { opacity: 1; transform: scale(1);}
+}

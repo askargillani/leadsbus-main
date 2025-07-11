@@ -139,10 +139,12 @@
     </div>
   
     <h1 style="margin-top: 50px"><b>Plans</b></h1>
-    <div class="section-read-more row">
+    <div class="section-read-more row pricing-row">
       <div class="col-12 col-md-6 col-padding-0">
-        <div class="card-shadow">
-          <h1 class="section-title"><span style="color: green">Starter ($10/month)</span></h1>
+        <div class="card-shadow pricing-card">
+          <div class="pricing-header">
+            <h1 class="section-title"><span class="pricing-title">Starter</span> <span class="pricing-price">$10<span class="pricing-period">/month</span></span></h1>
+          </div>
           <h6 class="subtitle">
             <ul>
               <li>30 days free trial</li>
@@ -150,11 +152,15 @@
               <li>Unlimited Pages</li>              
             </ul>
           </h6>
+          <a class="btn btn-orange pricing-btn" href="/facebook" (click)="scrollToFooterAndAnimate($event, 'Starter')">Choose Starter</a>
         </div>
       </div>
       <div class="col-12 col-md-6 col-padding-0">
-        <div class="card-shadow">
-          <h1 class="section-title"><span style="color: green">Pro ($15/month)</span></h1>
+        <div class="card-shadow pricing-card popular">
+          <div class="pricing-header">
+            <h1 class="section-title"><span class="pricing-title">Pro</span> <span class="pricing-price">$15<span class="pricing-period">/month</span></span></h1>
+            <span class="popular-badge">Most Popular</span>
+          </div>
           <h6 class="subtitle">
             <ul>
               <li>30 days free trial</li>
@@ -162,12 +168,15 @@
               <li>Unlimited Pages</li>          
             </ul>
           </h6>
+          <a class="btn btn-orange pricing-btn" href="/facebook" (click)="scrollToFooterAndAnimate($event, 'Pro')">Choose Pro</a>
         </div>
       </div>
 
       <div class="col-12 col-md-6 col-padding-0" style="margin-top: 20px;">
-        <div class="card-shadow">
-          <h1 class="section-title"><span style="color: green">Business ($25/month)</span></h1>
+        <div class="card-shadow pricing-card">
+          <div class="pricing-header">
+            <h1 class="section-title"><span class="pricing-title">Business</span> <span class="pricing-price">$25<span class="pricing-period">/month</span></span></h1>
+          </div>
           <h6 class="subtitle">
             <ul>
               <li>30 days free trial</li>
@@ -175,12 +184,15 @@
               <li>Unlimited Pages</li>             
             </ul>
           </h6>
+          <a class="btn btn-orange pricing-btn" href="/facebook" (click)="scrollToFooterAndAnimate($event, 'Business')">Choose Business</a>
         </div>
       </div>
 
       <div class="col-12 col-md-6 col-padding-0" style="margin-top: 20px;">
-        <div class="card-shadow">
-          <h1 class="section-title"><span style="color: green">Elite ($55/month)</span></h1>
+        <div class="card-shadow pricing-card">
+          <div class="pricing-header">
+            <h1 class="section-title"><span class="pricing-title">Elite</span> <span class="pricing-price">$55<span class="pricing-period">/month</span></span></h1>
+          </div>
           <h6 class="subtitle">
             <ul>
               <li>30 days free trial</li>
@@ -188,6 +200,7 @@
               <li>Unlimited Pages</li>          
             </ul>
           </h6>
+          <a class="btn btn-orange pricing-btn" href="/facebook" (click)="scrollToFooterAndAnimate($event, 'Elite')">Choose Elite</a>
         </div>
       </div>
     </div>

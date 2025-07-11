@@ -318,6 +318,7 @@ export class ContainerService {
           resolve(response);
         },
         error: (error) => {
+          this.messagesLeft = 0; // Reset messages left on error
           reject(error);
         }
       });

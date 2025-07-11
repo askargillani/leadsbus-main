@@ -28,6 +28,13 @@
                   Available Messages: {{containerService.messagesLeft || 0}}
                   <span *ngIf="containerService.messagesLeft === 0" class="warning-text">⚠️ No messages left!</span>
                 </p>
+                <button 
+                  *ngIf="containerService.messagesLeft === 0" 
+                  class="pay-subscription-btn"
+                  (click)="onPaySubscription()"
+                >
+                  Pay for your subscription
+                </button>
             </div>
             <div class="search-container">
                 <input class="search-input" placeholder="Search conversations..." [(ngModel)]="searchQuery" (ngModelChange)="filterRecipients()">
