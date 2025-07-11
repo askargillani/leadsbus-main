@@ -1,25 +1,24 @@
-<div class="header">
-    <span class="header-title">LeadsBus -</span>
-    <span class="header-subtitle">&nbsp;HELPING THOUSANDS OF BUSINESSES SCALE BUSINESSES</span> 
+<div class="header chat-header">
+    <span class="header-title">LeadsBus</span>
+    <span class="header-subtitle">Helping thousands of businesses scale businesses</span> 
 </div>
-
-<div class="chat-wrapper">
-    <div class="sidebar">
+<div class="chat-wrapper chat-wrapper-beautiful">
+    <div class="sidebar chat-sidebar">
         <img src="../../../assets/images/back-button.svg" class="back-button" (click)="onBackButtonClick()">
         <img src="../../../assets/images/logout.svg" class="logout-button" (click)="onLogout()">
     </div>
-    <div class="chat-container">
+    <div class="chat-container chat-container-beautiful">
         <div *ngIf="isLoading" class="loader-overlay">
             <div class="loader"></div>
             <div class="loader-text" *ngIf="chatSelected == false">
                 Loading recipients... {{containerService.allConversations?.data?.length || 0}} loaded
             </div>
         </div>
-        <div class="user-list-container">
+        <div class="user-list-container user-list-container-beautiful">
             <div class="productivity-img-container">
                 <img [src]="containerService.pageImageUrl" class="productivity-img">
             </div>
-            <div class="page-name">
+            <div class="page-name chat-page-name">
                 <h1><b>{{containerService.pageName}}</b></h1>
                 <button class="bulk-message-button" (click)="LoadAllRecepients()">Send New Bulk Messages</button>
                 <p 
@@ -52,12 +51,12 @@
             </div>
         </div>
         <div style="width: 100%" *ngIf="chatSelected">
-            <div class="message-sender">
-                <div class="message-sender-container">
+            <div class="message-sender chat-message-sender">
+                <div class="message-sender-container chat-message-sender-container">
                     <h2>{{selectedChatName}}</h2> 
                 </div>
             </div>
-            <div class="message-panel">
+            <div class="message-panel chat-message-panel">
                 <div *ngFor="let text of chatMessages" class="message-text">
                   <div [ngClass]="{'sender-message': text.from.name == containerService.pageName, 'receiver-message': text.from.name != containerService.pageName}" class="message-text-container">
                     <div>
@@ -181,6 +180,34 @@
   </div>
 </div>
 
+<!-- Confetti animation overlay -->
+<div *ngIf="isConfettiVisible" class="confetti-overlay">
+  <div class="confetti-container">
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti-message">
+      <span>🎉 Bulk messages sent successfully! 🎉</span>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog to show after bulk messages are sent -->
+  <div *ngIf="showBulkSentDialog" class="bulk-sent-dialog">
+    <span class="bulk-sent-dialog-icon">✅</span>
+    <span class="bulk-sent-dialog-text">Your message has been sent to all recipients!</span>
+    <div>
+      <button class="bulk-sent-dialog-close" (click)="closeBulkSentDialog()">Close</button>
+    </div>
+  </div>
+
 <style>
 /* Add these styles to your component's CSS/SCSS file */
 .bulk-sending-overlay {
@@ -257,5 +284,97 @@
   0%, 100% { transform: translateX(0);}
   20%, 60% { transform: translateX(-4px);}
   40%, 80% { transform: translateX(4px);}
+}
+.confetti-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.confetti-container {
+  position: relative;
+}
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(45deg, #f00, #0f0, #00f);
+  opacity: 0.8;
+  animation: confetti-fall 1.5s infinite;
+}
+.confetti-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+  z-index: 10001;
+  animation: fadeInUp 0.5s;
+}
+@keyframes confetti-fall {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(100vh) rotate(360deg); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+.bulk-sent-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10001;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.5s;
+  width: 500px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+.bulk-sent-dialog-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.bulk-sent-dialog-icon {
+  font-size: 2rem;
+  color: #4caf50;
+  margin-right: 10px;
+}
+.bulk-sent-dialog-text {
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+}
+.bulk-sent-dialog-close {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 10px;
+  transition: color 0.3s;
+}
+.bulk-sent-dialog-close:hover {
+  color: #0056b3;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 </style>

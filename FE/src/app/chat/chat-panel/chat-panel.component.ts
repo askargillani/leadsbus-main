@@ -29,6 +29,8 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
   isBulkSending: boolean = false;
   bulkSentCount: number = 0;
   bulkTotalCount: number = 0;
+  isConfettiVisible: boolean = false; // Add a flag for confetti animation
+  showBulkSentDialog: boolean = false; // New flag for showing bulk sent dialog
 
   constructor(private router: Router, public containerService: ContainerService, private ngZone: NgZone) {
 
@@ -320,6 +322,13 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
         this.isBulkSending = false;
         this.bulkSentCount = 0;
         this.bulkTotalCount = 0;
+        // Show confetti animation
+        this.isConfettiVisible = true;
+        setTimeout(() => {
+          this.isConfettiVisible = false;
+          this.showBulkSentDialog = true;
+          // Removed auto-close timeout
+        }, 2500);
       }, 2000); // Show overlay for 2s after completion
     }
   }
@@ -361,4 +370,9 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
       }, 500);
     });
   }
+
+  closeBulkSentDialog(): void {
+    this.showBulkSentDialog = false;
+  }
 }
+

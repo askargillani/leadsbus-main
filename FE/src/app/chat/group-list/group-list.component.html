@@ -1,28 +1,31 @@
-<div style="height: 60px; background-color: #0e5caa; display: flex; align-items: center; justify-content: center;">
-  <span style="color: white; font-size: 24px;">LeadsBus -</span>
-  <span style="color: white; font-size: 18px">&nbsp;HELPING THOUSANDS OF BUSINESSES SCALE BUSINESSES</span> 
+<div class="group-header">
+  <span class="group-header-title">LeadsBus</span>
+  <span class="group-header-subtitle">Helping thousands of businesses scale</span>
 </div>
-<div style="display: flex; height: 100%">
+<div class="group-wrapper">
   <div class="sidebar">
     <img src="../../../assets/images/back-button.svg" class="back-button">
     <img src="../../../assets/images/logout.svg" class="logout-button" (click)="onLogout()">
   </div>
   <div class="app-screen">
-    <h1>Pages</h1>
+    <h1 class="groups-title"><span class="groups-icon">📄</span> Pages</h1>
     <div class="search-container">
       <input class="search-input" placeholder="Search pages..." [(ngModel)]="searchQuery">
-      <button class="search-button" (click)="filterGroups()">Search</button>
+      <button class="search-button" (click)="filterGroups()">🔍</button>
     </div>
     <div class="outer-container">
-      <!-- Dynamically render pages -->
-      <div class="mt-4 group-container" *ngFor="let page of filteredPages" (click)="openGroupChat(page.id, page.access_token, page.name, page.picture.data.url)">
-        <div class="inner-container">
-          <img [src]="page.picture.data.url" [alt]="page.name" style="border-radius: 10px;">
-          <h2 class="page-name mt-4">{{ page.name }}</h2>
-          <div class="page-details">
-            <p><i class="fas fa-tag"></i> Category: {{ page.category }}</p>
-            <p><i class="fas fa-envelope"></i> Unread Messages: {{ page.unread_message_count || 0 }}</p>
-            <p><i class="fas fa-users"></i> Fans: {{ page.fan_count || 0 }}</p>
+      <div class="group-grid">
+        <div class="group-card" *ngFor="let page of filteredPages" (click)="openGroupChat(page.id, page.access_token, page.name, page.picture.data.url)">
+          <div class="group-card-img">
+            <img [src]="page.picture.data.url" [alt]="page.name">
+          </div>
+          <div class="group-card-info">
+            <h2 class="page-name">{{ page.name }}</h2>
+            <div class="page-details">
+              <p><span class="detail-icon">🏷️</span> Category: {{ page.category }}</p>
+              <p><span class="detail-icon">📨</span> Unread: {{ page.unread_message_count || 0 }}</p>
+              <p><span class="detail-icon">👥</span> Fans: {{ page.fan_count || 0 }}</p>
+            </div>
           </div>
         </div>
       </div>
