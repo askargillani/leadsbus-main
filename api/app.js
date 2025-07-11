@@ -12,8 +12,8 @@ app.use(express.json());
 
 // Configure CORS
 app.use(cors({
-  origin: '*',
-  credentials: true,
+  origin: '*', // If you need credentials, replace '*' with your frontend URL
+  credentials: false, // Set to false when using origin: '*'
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
 }));
