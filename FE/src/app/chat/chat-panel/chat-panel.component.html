@@ -75,6 +75,7 @@
                   </div>
                 </div>
                 <div class="input-div">
+  
                   <!-- Attach button and hidden file input -->
                   <label class="attach-label" title="Attach image">
                     <img src="../../../assets/images/attach.svg" class="attach-icon" alt="Attach" />
@@ -121,8 +122,16 @@
             </div>
         </div>
         <div class="input-div">
+           <label class="attach-label" title="Attach image">
+              <img src="../../../assets/images/attach.svg" class="attach-icon" alt="Attach" />
+              <input type="file" #fileInput accept="image/*" (change)="onBulkFileSelected($event)" style="display: none;" />
+            </label>
             <input class="input-field" [(ngModel)]="bulkMessageText" [disabled]="isLoading" placeholder="Enter your message...">
             <img src="../../../assets/images/send.svg" class="send-icon" (click)="onSvgClick($event); SendMessageToAll()" [class.disabled]="isLoading">
+            <div *ngIf="bulkSelectedFile" class="attachment-preview">
+              <img [src]="bulkSelectedFilePreview" alt="Preview" class="preview-img" />
+              <span class="remove-attachment" (click)="removeBulkAttachment()">&#10005;</span>
+            </div>
         </div>
     </div>
     </div>

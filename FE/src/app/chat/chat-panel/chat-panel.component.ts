@@ -25,6 +25,8 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
   showContentTypeDialog: boolean = false; // New flag for showing dialog
   selectedFile: File | null = null;
   selectedFilePreview: string | null = null;
+  bulkSelectedFile: File | null = null;
+  bulkSelectedFilePreview: string | null = null;
   private refreshInterval: any; // For polling
   isBulkSending: boolean = false;
   bulkSentCount: number = 0;
@@ -153,7 +155,7 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
       
     if (query) {
       this.conversations = this.originalConversations.filter(conversation =>
-        conversation.snippet && conversation.snippet.toLowerCase().includes(query)
+        conversation?.participants?.data[0]?.name && conversation?.participants?.data[0]?.name.toLowerCase().includes(query)
       );
     } else {
       this.conversations = [...this.originalConversations]; // Restore original conversations
@@ -250,9 +252,26 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
     }
   }
 
+  onBulkFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if(input.files && input.files.length > 0) {
+      this.bulkSelectedFile = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.bulkSelectedFilePreview = e.target.result;
+      };
+      reader.readAsDataURL(this.bulkSelectedFile);
+    }
+  }
+
   removeAttachment(): void {
     this.selectedFile = null;
     this.selectedFilePreview = null;
+  }
+
+  removeBulkAttachment(): void {
+    this.bulkSelectedFile = null;
+    this.bulkSelectedFilePreview = null;
   }
 
     async LoadAllRecepients(): Promise<void> {
@@ -275,8 +294,8 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
   }
 
   async SendMessageToAll(): Promise<void> {
-    if (!this.bulkMessageText.trim()) {
-      console.error('❌ Message text is empty. Cannot send messages.');
+    if (!this.bulkMessageText.trim() && !this.bulkSelectedFile) {
+      console.error('❌ Message text and image are both empty. Cannot send messages.');
       return;
     }
 
@@ -299,7 +318,14 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
           }
           const recipientId = conversation.participants.data[0].id;
           try {
-            await this.containerService.sendMessageUsingFB(recipientId, this.bulkMessageText, this.selectedContentType);
+            // Send bulk image first if attached
+            if (this.bulkSelectedFile) {
+              await this.containerService.sendImageAttachmentUsingFB(recipientId, this.bulkSelectedFile, this.selectedContentType);
+            }
+            // Then send bulk message text if present
+            if (this.bulkMessageText.trim()) {
+              await this.containerService.sendMessageUsingFB(recipientId, this.bulkMessageText, this.selectedContentType);
+            }
             sent++;
             this.bulkSentCount = sent;
             this.containerService.deductMessage();
@@ -307,6 +333,9 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
             console.error(`❌ Failed to send message to conversation ID ${recipientId}:`, error);
           }
         }
+        // Clear bulk image after sending
+        this.bulkSelectedFile = null;
+        this.bulkSelectedFilePreview = null;
         this.containerService.fetchPageConversations(this.containerService.pageToken, this.containerService.pageName,  this.containerService.pageImageUrl).then(()=>{
           this.conversations = this.containerService.pageConversations.data
         });
