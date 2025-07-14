@@ -336,12 +336,13 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
                 console.error(`❌ Failed to send text message to ${participantName} (ID: ${recipientId}):`, error);
               }
             }
-            sent++;
-            this.bulkSentCount = sent;
+            
             this.containerService.deductMessage();
           } catch (error) {
             console.error(`❌ Failed to send message to conversation ID ${recipientId}:`, error);
           }
+          sent++;
+          this.bulkSentCount = sent;
         }
         // Clear bulk image after sending
         this.bulkSelectedFile = null;
