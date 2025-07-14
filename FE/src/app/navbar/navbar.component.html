@@ -13,12 +13,10 @@
       <button href="/" class="btn btn-orange" (click)="login()">SIGN IN</button>
     </div>
     <div id="mySidenav" class="sidenav" [className]="showSidenav ? 'sidenav w-250':'sidenav'">
-      <a href="/">Product</a>
-      <a href="/">Template</a>
-      <a href="/">Blog</a>
-      <a href="/">Pricing</a>
+      <a (click)="navigateToPrivacy()">Privacy Policy</a>
+      <a (click)="contactViaWhatsApp()">Contact via WhatsApp</a>
       <div class="d-flex flex-column">
-        <button href="/" class="btn btn-orange mt-4 mr-3">SIGN Free</button>
+        <button class="btn btn-orange mt-4 mr-3" (click)="login()">SIGN Free</button>
       </div>
     </div>
   </div>

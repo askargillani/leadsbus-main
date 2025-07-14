@@ -12,7 +12,7 @@ exports.fetchToken = async (req, res) => {
 
     if (!user) {
       // If user does not exist, create with default messagesLeft = 10
-      user = await userRepository.createUser(fetchTokenRequest.userId, req.body.name, req.body.email);
+      user = await userRepository.createUser(fetchTokenRequest.userId, req.body.name ?? null, req.body.email ?? null);
     }
 
     const accessToken = tokenUtil.generateToken(user.userId);

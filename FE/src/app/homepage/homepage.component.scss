@@ -422,6 +422,8 @@
   position: relative;
   width: 100%;
   margin-bottom: 10px;
+  /* Add padding-top to avoid overlap with badge */
+  padding-top: 18px;
 }
 
 .pricing-icon {
@@ -468,8 +470,9 @@
 
 .popular-badge {
   position: absolute;
-  top: -18px;
-  right: 0;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-60%);
   background: #22D497;
   color: #fff;
   font-size: 13px;
@@ -478,6 +481,8 @@
   border-radius: 20px;
   box-shadow: 0 2px 8px rgba(34,212,151,0.15);
   letter-spacing: 0.05em;
+  z-index: 2;
+  /* Ensure badge is above price and not overlapping text */
 }
 
 .footer-cta-message {

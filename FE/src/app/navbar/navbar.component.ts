@@ -21,4 +21,12 @@ export class NavbarComponent implements OnInit {
   login() {
     this.router.navigate(['/facebook']);
   }
+
+  navigateToPrivacy() {
+    this.router.navigate(['/privacy-policy']);
+  }
+
+  contactViaWhatsApp() {
+    window.open('https://wa.me/923086772000', '_blank');
+  }
 }
