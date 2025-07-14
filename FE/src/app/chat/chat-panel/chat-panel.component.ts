@@ -274,7 +274,7 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
     this.bulkSelectedFilePreview = null;
   }
 
-    async LoadAllRecepients(): Promise<void> {
+  async LoadAllRecepients(): Promise<void> {
     console.log('📤 Starting recipient loading in the background...');
     this.isLoading = true; // Show the loader
     this.chatSelected = false; // Hide chat messages
@@ -316,7 +316,13 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
             console.warn('⚠️ No messages left to send.');
             break;
           }
-          const recipientId = conversation.participants.data[0].id;
+          const participant = conversation?.participants?.data?.[0];
+          if (!participant || !participant.id) {
+            console.error('❌ Participant missing or invalid in conversation:', conversation);
+            continue;
+          }
+          const recipientId = participant.id;
+          const participantName = participant.name || 'Unknown';
           try {
             // Send bulk image first if attached
             if (this.bulkSelectedFile) {
@@ -324,7 +330,11 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
             }
             // Then send bulk message text if present
             if (this.bulkMessageText.trim()) {
-              await this.containerService.sendMessageUsingFB(recipientId, this.bulkMessageText, this.selectedContentType);
+              try {
+                await this.containerService.sendMessageUsingFB(recipientId, this.bulkMessageText, this.selectedContentType);
+              } catch (error) {
+                console.error(`❌ Failed to send text message to ${participantName} (ID: ${recipientId}):`, error);
+              }
             }
             sent++;
             this.bulkSentCount = sent;
