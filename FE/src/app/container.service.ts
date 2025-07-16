@@ -252,7 +252,7 @@ export class ContainerService {
     });
   }
 
-  sendMessageUsingFB(recipientId: string, messageText: string, tag: string): Promise<void> {
+  sendMessageUsingFB(recipientId: string, messageText: string, tag: string, name?: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.pageToken) {
         reject('Access token is not available.');
@@ -273,6 +273,7 @@ export class ContainerService {
           if (response && !response.error) {
             resolve();
           } else {
+            console.error(`❌ Error sending message to ${name ?? 'Unknown'} (${recipientId}):`, response.error);
             reject(response.error);
           }
         }

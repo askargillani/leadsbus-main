@@ -100,6 +100,9 @@
                 <div style="width: 100%" *ngIf="chatSelected == false">
         <div class="radio-selection-container">
             <div class="radio-selection">
+                <div *ngIf="bulkTypeError" class="bulk-type-error-text">
+                  <span>Please select a message type.</span>
+                </div>
                 <h3>Select the content type that fits best your message</h3>
                 <div>
                     <label>
@@ -119,20 +122,36 @@
                         Account update
                     </label>
                 </div>
+            <div class="personalize-bulk-container" style="margin-top: 30px; margin-left: 16px; margin-bottom: 4px; flex-direction: column">
+            <label>
+              <input type="checkbox" [(ngModel)]="isPersonalizedBulk">
+              Personalized Message
+            </label>
+            <span style="font-size: 13px; color: #888; margin-left: 8px;">
+              Use <b>&lt;&lt;name&gt;&gt;</b> in your message to insert recipient's name after checking "Personalized Message" Checkbox ⬆️.<br>
+              Example: <i>Hi &lt;&lt;name&gt;&gt;, good to go.</i>
+            </span>
+          </div>
             </div>
         </div>
+          
+        
         <div class="input-div">
            <label class="attach-label" title="Attach image">
               <img src="../../../assets/images/attach.svg" class="attach-icon" alt="Attach" />
               <input type="file" #fileInput accept="image/*" (change)="onBulkFileSelected($event)" style="display: none;" />
             </label>
             <input class="input-field" [(ngModel)]="bulkMessageText" [disabled]="isLoading" placeholder="Enter your message...">
-            <img src="../../../assets/images/send.svg" class="send-icon" (click)="onSvgClick($event); SendMessageToAll()" [class.disabled]="isLoading">
+            <img src="../../../assets/images/send.svg"
+                 class="send-icon"
+                 (click)="onSvgClick($event); SendMessageToAll()"
+                 [class.disabled]="isLoading"
+            >
             <div *ngIf="bulkSelectedFile" class="attachment-preview">
               <img [src]="bulkSelectedFilePreview" alt="Preview" class="preview-img" />
               <span class="remove-attachment" (click)="removeBulkAttachment()">&#10005;</span>
             </div>
-        </div>
+          </div>
     </div>
     </div>
 </div>
@@ -178,7 +197,7 @@
     </div>
     <div class="bulk-sending-text">
       <h2>
-        <span class="sent-count">{{(bulkSentCount/bulkTotalCount)*100}}</span>% of messages sent
+        <span class="sent-count">{{((bulkSentCount/bulkTotalCount)*100) | number:'1.1-1'}}</span>% of messages sent
       </h2>
       <p class="dont-close-text">
         <span class="animated-warning">⚠️</span>

@@ -855,3 +855,26 @@
   font-size: 1.1rem;
   box-shadow: 0 2px 8px rgba(55,52,169,0.08);
 }
+
+.personalize-bulk-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+  margin-top: 0;
+  margin-left: 16px;
+  gap: 8px;
+  min-height: 32px;
+}
+
+.bulk-type-error-text {
+  color: #f44336;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  text-align: left;
+}
+
+.radio-selection input[type="radio"]:invalid {
+  border-color: #f44336;
+}

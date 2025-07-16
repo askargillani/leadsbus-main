@@ -33,6 +33,8 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
   bulkTotalCount: number = 0;
   isConfettiVisible: boolean = false; // Add a flag for confetti animation
   showBulkSentDialog: boolean = false; // New flag for showing bulk sent dialog
+  isPersonalizedBulk: boolean = false; // Add flag for personalized bulk message
+  bulkTypeError: boolean = false; // Add error flag for bulk type
 
   constructor(private router: Router, public containerService: ContainerService, private ngZone: NgZone) {
 
@@ -294,6 +296,13 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
   }
 
   async SendMessageToAll(): Promise<void> {
+    // Check if content type is selected
+    if (!this.selectedContentType) {
+      this.bulkTypeError = true;
+      return;
+    } else {
+      this.bulkTypeError = false;
+    }
     if (!this.bulkMessageText.trim() && !this.bulkSelectedFile) {
       console.error('❌ Message text and image are both empty. Cannot send messages.');
       return;
@@ -322,7 +331,8 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
             continue;
           }
           const recipientId = participant.id;
-          const participantName = participant.name || 'Unknown';
+          // Get first name only
+          const participantName = (participant.name || 'Unknown').split(' ')[0];
           try {
             // Send bulk image first if attached
             if (this.bulkSelectedFile) {
@@ -330,8 +340,12 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
             }
             // Then send bulk message text if present
             if (this.bulkMessageText.trim()) {
+              let messageToSend = this.bulkMessageText;
+              if (this.isPersonalizedBulk) {
+                messageToSend = messageToSend.replace(/<<name>>/gi, participantName);
+              }
               try {
-                await this.containerService.sendMessageUsingFB(recipientId, this.bulkMessageText, this.selectedContentType);
+                await this.containerService.sendMessageUsingFB(recipientId, messageToSend, this.selectedContentType, participantName);
               } catch (error) {
                 console.error(`❌ Failed to send text message to ${participantName} (ID: ${recipientId}):`, error);
               }
@@ -358,17 +372,20 @@ export class ChatPanelComponent implements OnInit, OnDestroy {
       console.error('❌ Error during bulk messaging:', error);
     } finally {
       this.isLoading = false;
+
       setTimeout(() => {
         this.isBulkSending = false;
+        // Show confetti animation
+          if(this.bulkTotalCount === this.bulkSentCount) {
+          this.isConfettiVisible = true;
+          setTimeout(() => {
+            this.isConfettiVisible = false;
+            this.showBulkSentDialog = true;
+            // Removed auto-close timeout
+          }, 2500);
+        }
         this.bulkSentCount = 0;
         this.bulkTotalCount = 0;
-        // Show confetti animation
-        this.isConfettiVisible = true;
-        setTimeout(() => {
-          this.isConfettiVisible = false;
-          this.showBulkSentDialog = true;
-          // Removed auto-close timeout
-        }, 2500);
       }, 2000); // Show overlay for 2s after completion
     }
   }
