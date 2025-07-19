@@ -26,22 +26,21 @@ export class ContainerService {
     }
   }
 
-  fetchUserInfo(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (!this.accessToken) {
-        reject('Access token is not available.');
-        return;
-      }
+  async fetchUserInfo(): Promise<void> {
+    if (!this.accessToken) {
+      return Promise.reject('Access token is not available.');
+    }
 
-      FB.api('/me', { fields: 'name,email,gender' }, (userInfo: any) => {
+    return new Promise((resolve, reject) => {
+      FB.api('/me', { fields: 'name,email,gender' }, async (userInfo: any) => {
         if (userInfo && !userInfo.error) {
           this.profileInfo = userInfo;
-            this.fetchBackendToken(userInfo.id, userInfo.name, userInfo.email)
-            .then(() => {
-            })
-            .catch(error => {
-            });
-          resolve();
+          try {
+            await this.fetchBackendToken(userInfo.id, userInfo.name, userInfo.email);
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
         } else {
           reject(userInfo.error);
         }
